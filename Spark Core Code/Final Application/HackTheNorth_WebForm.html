@@ -1,11 +1,39 @@
-/* Paste the code between the dashes below into a .txt file and save it as an .html file. Replace your-device-ID-goes-here with your actual device ID and your-access-token-goes-here with your actual access token.
 
----------------------------
-<!-- Replace your-device-ID-goes-here with your actual device ID
-and replace your-access-token-goes-here with your actual access token-->
 <!DOCTYPE>
 <html>
   <body>
+    <span id="passthroughToFirebase"></span><br>
+    <span id="tstamp"></span>
+
+    <br><br>
+    <button onclick="start()">Connect</button>
+
+    <script type="text/javascript">
+    function start() {
+
+        document.getElementById("passthroughToFirebase").innerHTML = "Waiting for data...";
+        var deviceID = "55ff6c065075555339401487";
+        var accessToken = "7247cf97b5123b5d19ab7826662d891aacffff97";
+        var eventSource = new EventSource("https://api.spark.io/v1/devices/" + deviceID + "/events/?access_token=" + accessToken);
+
+        eventSource.addEventListener('open', function(e) {
+            console.log("Opened!"); },false);
+
+        eventSource.addEventListener('error', function(e) {
+            console.log("Errored!"); },false);
+
+        eventSource.addEventListener('sensorUpdate', function(e) {
+            var parsedData = JSON.parse(e.data);
+            var id = document.getElementById("id");
+            var level = document.getElementById("level");
+            var tsSpan   = document.getElementById("tstamp");
+            tempSpan.innerHTML = "Core: " + parsedData.coreid + " uptime: " + parsedData.data + " (h:m:s)";
+            tempSpan.style.fontSize = "28px";
+            tsSpan.innerHTML = "At timestamp " + parsedData.published_at;
+            tsSpan.style.fontSize = "9px";
+        }, false);
+    }
+    </script>
   <center>
   <br>
   <br>
@@ -23,5 +51,3 @@ and replace your-access-token-goes-here with your actual access token-->
   </center>
   </body>
 </html>
----------------------------
-*/
