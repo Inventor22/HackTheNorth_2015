@@ -22,6 +22,12 @@ void loop()
         Serial.print("\t2: ");
         Serial.print(analogRead(2));
         Serial.print("\t3: ");
-        Serial.println(analogRead(4));
+        Serial.print(analogRead(4));
+		Serial.print("\t4: ");
+		Serial.print(analogRead(6));
+		Serial.print("\t5: ");
+		Serial.print(analogRead(8));
+		Serial.print("\t6: ");
+		Serial.println(analogRead(10));
     }
 }
