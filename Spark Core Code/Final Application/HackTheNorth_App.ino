@@ -14,7 +14,7 @@ char sensorUpdateStr[256];
 uint32_t tNow = 0;
 uint32_t tPrev = 0;
 
-/*Sensor sensor[6] = {
+Sensor sensor[6] = {
   Sensor(0, MAX_GRAMS_SENSOR_HALF_INCH),
   Sensor(1, MAX_GRAMS_SENSOR_HALF_INCH),
   Sensor(2, MAX_GRAMS_SENSOR_HALF_INCH),
@@ -30,39 +30,71 @@ MeasurableContainer container[6] = {
   MeasurableContainer(3, D3, sensor[3]),
   MeasurableContainer(4, D4, sensor[4]),
   MeasurableContainer(5, D5, sensor[5]),
-};*/
+};
 
 void setup() {
   pinMode(boardLed, OUTPUT); // Our on-board LED is output as well
+
+  Spark.function("led",ledToggle);
+
+  digitalWrite(boardLed, LOW);
+
   tPrev = millis();
 }
 
+uint32_t tNow2 = 0, tPrev2 = 0;
+
 void loop() {
+  tNow2 = millis();
+  if (tNow2 - tPrev2 > 10000) {
+    tPrev2 = tNow;
+
+    sprintf(sensorUpdateStr, "{\"id\": %i, \"level\": %s}", 2, "Full");
+    Spark.publish("sensorUpdate",sensorUpdateStr,60,PRIVATE);
+  }
+
+
+
   tNow = millis();
 
   if (tNow - tPrev > updatePeriod) {
     for (int i = 0; i < NUM_CONTAINERS; i++) {
-      //sensor[i].readSensor();
+      sensor[i].readSensor();
     }
+    tPrev = tNow;
   }
 
   if (changeDetected()) {
     for (int i = 0; i < NUM_CONTAINERS; i++) {
-      //char level[20] = "hello";
-      /*char level[20] = container[i].getLevel().c_str();*/
-      //String a = container[i].getLevel().c_str();
+      char level[20] = "hello";
+      char level[20] = container[i].getLevel().c_str();
+      String a = container[i].getLevel().c_str();
 
-      //sprintf(sensorUpdateStr, "{\"id\": %i, \"level\": %s}", container[i].getId(), level);
-      //Spark.publish("sensorUpdate",sensorUpdateStr,60,PRIVATE);
+      sprintf(sensorUpdateStr, "{\"id\": %i, \"level\": %s}", container[i].getId(), level);
+      Spark.publish("sensorUpdate",sensorUpdateStr,60,PRIVATE);
     }
   }
 }
 
 bool changeDetected() {
   for (int i = 0; i < NUM_CONTAINERS; i++) {
-    //if (sensor[i].changeDetected) {
+    if (sensor[i].changeDetected) {
       return true;
-    //}
+    }
   }
   return false;
+}
+
+int ledToggle(String command) {
+    if (command=="on") {
+        digitalWrite(boardLed,HIGH);
+        return 1;
+    }
+    else if (command=="off") {
+        digitalWrite(boardLed,LOW);
+        return 0;
+    }
+    else {
+        return -1;
+    }
 }
