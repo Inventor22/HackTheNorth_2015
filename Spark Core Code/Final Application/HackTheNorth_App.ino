@@ -14,7 +14,7 @@ char sensorUpdateStr[256];
 uint32_t tNow = 0;
 uint32_t tPrev = 0;
 
-Sensor sensor[6] = {
+/*Sensor sensor[6] = {
   Sensor(0, MAX_GRAMS_SENSOR_HALF_INCH),
   Sensor(1, MAX_GRAMS_SENSOR_HALF_INCH),
   Sensor(2, MAX_GRAMS_SENSOR_HALF_INCH),
@@ -30,7 +30,7 @@ MeasurableContainer container[6] = {
   MeasurableContainer(3, D3, sensor[3]),
   MeasurableContainer(4, D4, sensor[4]),
   MeasurableContainer(5, D5, sensor[5]),
-};
+};*/
 
 void setup() {
   pinMode(boardLed, OUTPUT); // Our on-board LED is output as well
@@ -42,27 +42,27 @@ void loop() {
 
   if (tNow - tPrev > updatePeriod) {
     for (int i = 0; i < NUM_CONTAINERS; i++) {
-      sensor[i].readSensor();
+      //sensor[i].readSensor();
     }
   }
 
   if (changeDetected()) {
     for (int i = 0; i < NUM_CONTAINERS; i++) {
-      char level[20] = "hello";
-      char level[20] = container[i].getLevel().c_str();
-      String a = container[i].getLevel().c_str();
+      //char level[20] = "hello";
+      /*char level[20] = container[i].getLevel().c_str();*/
+      //String a = container[i].getLevel().c_str();
 
-      sprintf(sensorUpdateStr, "{\"id\": %i, \"level\": %s}", container[i].getId(), level);
-      Spark.publish("sensorUpdate",sensorUpdateStr,60,PRIVATE);
+      //sprintf(sensorUpdateStr, "{\"id\": %i, \"level\": %s}", container[i].getId(), level);
+      //Spark.publish("sensorUpdate",sensorUpdateStr,60,PRIVATE);
     }
   }
 }
 
 bool changeDetected() {
   for (int i = 0; i < NUM_CONTAINERS; i++) {
-    if (sensor[i].changeDetected) {
+    //if (sensor[i].changeDetected) {
       return true;
-    }
+    //}
   }
   return false;
 }
